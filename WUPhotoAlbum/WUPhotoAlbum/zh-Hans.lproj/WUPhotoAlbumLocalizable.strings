@@ -1,0 +1,14 @@
+/* 
+  WUPhotoAlbumLocalizable.strings
+  WUPhotoAlbum
+
+  Created by 武探 on 2017/3/17.
+  Copyright © 2017年 wutan. All rights reserved.
+*/
+
+OK = "确定";
+Cancel = "取消";
+Album = "相册";
+AlbumSelectErrorMsg = "最多只能选择%lu张图片";
+Preview = "预览";
+Done = "完成";
