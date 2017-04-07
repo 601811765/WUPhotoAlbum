@@ -216,4 +216,17 @@ NSString *const WUPhotoAlbumGroupCellIdentifier = @"WUPhotoAlbumGroupCellIdentif
     [self showViewController:albumController sender:nil];
 }
 
+#pragma mark -
+-(BOOL)shouldAutorotate {
+    return NO;
+}
+
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+-(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
+}
+
 @end

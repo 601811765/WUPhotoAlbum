@@ -402,4 +402,33 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
     return self.navigationController.navigationBarHidden;
 }
 
+#pragma mark -
+
+//-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+//    
+//    NSInteger page = self.collectionView.contentOffset.x / CGRectGetWidth(self.collectionView.bounds);
+// 
+//    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+//    
+//    [self.collectionView reloadData];
+//    
+////    CGFloat offsetX = page * size.width;
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(coordinator.transitionDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:page inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+//    });
+//}
+
+#pragma mark -
+-(BOOL)shouldAutorotate {
+    return NO;
+}
+
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+-(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
+}
+
 @end

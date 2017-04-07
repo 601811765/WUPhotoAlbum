@@ -439,4 +439,18 @@ NSString *const WUPhtotAlbumCellIdentifier = @"WUPhtotAlbumCellIdentifier";
     return startRect;
 }
 
+#pragma mark -
+-(BOOL)shouldAutorotate {
+    return NO;
+}
+
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+-(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
+}
+
+
 @end
