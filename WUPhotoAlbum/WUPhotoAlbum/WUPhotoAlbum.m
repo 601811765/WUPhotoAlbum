@@ -62,13 +62,17 @@
     PHAuthorizationStatus authStatus = [PHPhotoLibrary authorizationStatus];
     if(authStatus == PHAuthorizationStatusNotDetermined) {
         [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-            if(status == PHAuthorizationStatusAuthorized) {
-                [self openAlbumWithController:controller];
-            } else {
-                if(configuration.delegate) {
-                    [configuration.delegate photoAlbumAuthorizationFail:authStatus];
+            
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                if(status == PHAuthorizationStatusAuthorized) {
+                    [self openAlbumWithController:controller];
+                } else {
+                    if(configuration.delegate) {
+                        [configuration.delegate photoAlbumAuthorizationFail:authStatus];
+                    }
                 }
-            }
+            }];
+            
         }];
     } else if(authStatus == PHAuthorizationStatusRestricted || authStatus == PHAuthorizationStatusDenied) {
         if(configuration.delegate) {
