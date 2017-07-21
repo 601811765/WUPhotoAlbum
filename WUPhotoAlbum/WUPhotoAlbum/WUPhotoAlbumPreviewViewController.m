@@ -192,7 +192,14 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [UIViewController attemptRotationToDeviceOrientation];
+        
     });
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [[UIDevice currentDevice] setValue:@(UIInterfaceOrientationPortrait) forKey:@"orientation"];
 }
 
 -(void)initializeComponent {
@@ -362,10 +369,9 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
 
 -(id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
     if(operation == UINavigationControllerOperationPop && [fromVC isEqual:self]) {
-        
-        WUPhotoAlbumPopAnimated *popAnimated = [[WUPhotoAlbumPopAnimated alloc] init];
-        
         if([self isInterfaceOrientationPortrait]) {
+            WUPhotoAlbumPopAnimated *popAnimated = [[WUPhotoAlbumPopAnimated alloc] init];
+            
             self.foregroundImageView.hidden = NO;
             self.collectionView.hidden = YES;
             WUPhotoAlbumPreviewCell *cell = (WUPhotoAlbumPreviewCell*)self.collectionView.visibleCells[0];
@@ -376,9 +382,9 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
             popAnimated.animated = ^ {
                 self.foregroundImageView.frame = self.willDismissBlock(asset.tag);
             };
+            
+            return popAnimated;
         }
-        
-        return popAnimated;
     }
     return nil;
 }
@@ -447,14 +453,11 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
 #pragma mark -
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    
     NSInteger page = self.collectionView.contentOffset.x / CGRectGetWidth(self.collectionView.bounds);
  
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+//    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
     [self.collectionView reloadData];
-    
-//    CGFloat offsetX = page * size.width;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(coordinator.transitionDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:page inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
     });
@@ -469,8 +472,5 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
     return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
 }
 
-//-(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
-//    return UIInterfaceOrientationPortrait;
-//}
 
 @end
