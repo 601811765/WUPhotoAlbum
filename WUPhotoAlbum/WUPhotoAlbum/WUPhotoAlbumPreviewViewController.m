@@ -151,6 +151,22 @@ typedef void(^WUPhotoAlbumAnimatedBlcok)(void);
 
 
 
+
+
+@interface WUPhotoAlbumPreviewFlowLayout : UICollectionViewFlowLayout
+
+@end
+
+@implementation WUPhotoAlbumPreviewFlowLayout
+
+@end
+
+
+
+
+
+
+
 NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewViewCellIdentifier";
 
 @interface WUPhotoAlbumPreviewViewController ()<UINavigationControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, WUPhotoAlbumPreviewCellDelegate, UIGestureRecognizerDelegate>
@@ -171,6 +187,14 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
     [self initializeComponent];
 }
 
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [UIViewController attemptRotationToDeviceOrientation];
+    });
+}
+
 -(void)initializeComponent {
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationController.delegate = self;
@@ -181,7 +205,7 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithImage:self.configuration.deSelectImage style:UIBarButtonItemStylePlain target:self action:@selector(rightBarButtonTouch:)];
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    WUPhotoAlbumPreviewFlowLayout *layout = [[WUPhotoAlbumPreviewFlowLayout alloc] init];
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     layout.minimumLineSpacing = 0;
     layout.minimumInteritemSpacing = 0;
@@ -280,12 +304,25 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
 }
 
 -(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    
+    if(![self isInterfaceOrientationPortrait]) {
+        return NO;
+    }
+    
     UIPanGestureRecognizer *pan = (UIPanGestureRecognizer*)gestureRecognizer;
     CGPoint point = [pan translationInView:gestureRecognizer.view];
     if(point.y > 0) {
         return YES;
     }
     return NO;
+}
+
+-(BOOL)isInterfaceOrientationPortrait {
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+    if(screenBounds.size.width > screenBounds.size.height) {
+        return NO;
+    }
+    return YES;
 }
 
 -(void)interactionRecognizer:(UIPanGestureRecognizer*)recognizer {
@@ -325,17 +362,22 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
 
 -(id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
     if(operation == UINavigationControllerOperationPop && [fromVC isEqual:self]) {
-        self.foregroundImageView.hidden = NO;
-        self.collectionView.hidden = YES;
-        WUPhotoAlbumPreviewCell *cell = (WUPhotoAlbumPreviewCell*)self.collectionView.visibleCells[0];
-        NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
-        WUPhotoAlbumAsset *asset = self.assets[indexPath.row];
-        self.foregroundImageView.image = cell.imageView.image;
-        self.foregroundImageView.frame = [self.foregroundImageView.image WUPhotoAlbum_rectAspectFitRectForSize:self.view.bounds.size];
+        
         WUPhotoAlbumPopAnimated *popAnimated = [[WUPhotoAlbumPopAnimated alloc] init];
-        popAnimated.animated = ^ {
-            self.foregroundImageView.frame = self.willDismissBlock(asset.tag);
-        };
+        
+        if([self isInterfaceOrientationPortrait]) {
+            self.foregroundImageView.hidden = NO;
+            self.collectionView.hidden = YES;
+            WUPhotoAlbumPreviewCell *cell = (WUPhotoAlbumPreviewCell*)self.collectionView.visibleCells[0];
+            NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+            WUPhotoAlbumAsset *asset = self.assets[indexPath.row];
+            self.foregroundImageView.image = cell.imageView.image;
+            self.foregroundImageView.frame = [self.foregroundImageView.image WUPhotoAlbum_rectAspectFitRectForSize:self.view.bounds.size];
+            popAnimated.animated = ^ {
+                self.foregroundImageView.frame = self.willDismissBlock(asset.tag);
+            };
+        }
+        
         return popAnimated;
     }
     return nil;
@@ -404,31 +446,31 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
 
 #pragma mark -
 
-//-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-//    
-//    NSInteger page = self.collectionView.contentOffset.x / CGRectGetWidth(self.collectionView.bounds);
-// 
-//    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-//    
-//    [self.collectionView reloadData];
-//    
-////    CGFloat offsetX = page * size.width;
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(coordinator.transitionDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:page inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-//    });
-//}
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    
+    NSInteger page = self.collectionView.contentOffset.x / CGRectGetWidth(self.collectionView.bounds);
+ 
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    [self.collectionView reloadData];
+    
+//    CGFloat offsetX = page * size.width;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(coordinator.transitionDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:page inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+    });
+}
 
 #pragma mark -
 -(BOOL)shouldAutorotate {
-    return NO;
+    return YES;
 }
 
 -(UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskPortrait;
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
 }
 
--(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
-    return UIInterfaceOrientationPortrait;
-}
+//-(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+//    return UIInterfaceOrientationPortrait;
+//}
 
 @end

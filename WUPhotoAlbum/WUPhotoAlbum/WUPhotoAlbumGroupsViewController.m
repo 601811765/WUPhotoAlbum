@@ -210,7 +210,7 @@ NSString *const WUPhotoAlbumGroupCellIdentifier = @"WUPhotoAlbumGroupCellIdentif
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     WUPhotoAlbumGroupObject *group = self.groups[indexPath.row];
-    
+
     WUPhotoAlbumViewController *albumController = [[WUPhotoAlbumViewController alloc] init];
     albumController.group = group;
     [self showViewController:albumController sender:nil];

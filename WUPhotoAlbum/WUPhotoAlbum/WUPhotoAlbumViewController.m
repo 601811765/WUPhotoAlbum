@@ -112,6 +112,23 @@
 
 
 
+
+
+@interface WUPhotoAlbumFlowLayout : UICollectionViewFlowLayout
+
+@end
+
+@implementation WUPhotoAlbumFlowLayout
+
+@end
+
+
+
+
+
+
+
+
 NSString *const WUPhtotAlbumCellIdentifier = @"WUPhtotAlbumCellIdentifier";
 
 #define WUPhotoAlbumBottomToolbarHeight 44
@@ -152,11 +169,11 @@ NSString *const WUPhtotAlbumCellIdentifier = @"WUPhtotAlbumCellIdentifier";
     self.dataArray = [NSMutableArray array];
     self.columns = 4;
     
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    layout.minimumLineSpacing = 1;
-    layout.minimumInteritemSpacing = 1;
+    WUPhotoAlbumFlowLayout *layout = [[WUPhotoAlbumFlowLayout alloc] init];
+    layout.minimumLineSpacing = 2;
+    layout.minimumInteritemSpacing = 2;
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
-    CGFloat viewWidth = self.preferredInterfaceOrientationForPresentation == UIInterfaceOrientationPortrait ? CGRectGetWidth(self.view.frame) : CGRectGetHeight(self.view.frame);
+    CGFloat viewWidth = CGRectGetWidth(self.view.bounds);
     CGFloat width = (viewWidth - (self.columns - 1) * layout.minimumLineSpacing) / self.columns;
     layout.itemSize = CGSizeMake(width, width);
     
