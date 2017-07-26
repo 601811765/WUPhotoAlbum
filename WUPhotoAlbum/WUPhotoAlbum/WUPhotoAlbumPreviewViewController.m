@@ -173,6 +173,7 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
 
 @property(nonatomic, strong) UICollectionView *collectionView;
 @property(nonatomic, strong) UIImageView *foregroundImageView;
+@property(nonatomic, strong) UIImageView *screenshotImageView;
 
 @property(nonatomic, strong) UIPercentDrivenInteractiveTransition *interactiveTransition;
 
@@ -225,9 +226,15 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
     self.collectionView.showsHorizontalScrollIndicator = NO;
     self.collectionView.showsVerticalScrollIndicator = NO;
     self.collectionView.pagingEnabled = YES;
-    self.collectionView.backgroundColor = [UIColor clearColor];
+    self.collectionView.backgroundColor = [UIColor whiteColor];
     [self.collectionView registerClass:[WUPhotoAlbumPreviewCell class] forCellWithReuseIdentifier:WUPhotoAlbumPreviewViewCellIdentifier];
     [self.view addSubview:self.collectionView];
+    
+    self.screenshotImageView = [[UIImageView alloc] init];
+    self.screenshotImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.screenshotImageView.backgroundColor = self.collectionView.backgroundColor;
+    self.screenshotImageView.hidden = YES;
+    [self.view addSubview:self.screenshotImageView];
     
     [self makeConstraints];
     [self addInteractionRecognizer];
@@ -243,6 +250,12 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
     [NSLayoutConstraint constraintWithItem:self.collectionView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:-WUPhotoAlbumPreviewViewMargin].active = YES;
     [NSLayoutConstraint constraintWithItem:self.collectionView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0].active = YES;
     [NSLayoutConstraint constraintWithItem:self.collectionView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:WUPhotoAlbumPreviewViewMargin].active = YES;
+    
+    self.screenshotImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint constraintWithItem:self.screenshotImageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0].active = YES;
+    [NSLayoutConstraint constraintWithItem:self.screenshotImageView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1 constant:0].active = YES;
+    [NSLayoutConstraint constraintWithItem:self.screenshotImageView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0].active = YES;
+    [NSLayoutConstraint constraintWithItem:self.screenshotImageView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:0].active = YES;
 }
 
 -(void)animationShowForegroundImage {
@@ -429,6 +442,12 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
     }];
 }
 
+-(UIImage*)imageWithCellIndex:(NSInteger)index {
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    WUPhotoAlbumPreviewCell *cell = (WUPhotoAlbumPreviewCell*)[_collectionView cellForItemAtIndexPath:indexPath];
+    return cell.imageView.image;
+}
+
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     
     NSInteger page = scrollView.contentOffset.x / CGRectGetWidth(scrollView.bounds);
@@ -442,7 +461,8 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
 -(void)albumPreviewCellTapHandler:(WUPhotoAlbumPreviewCell *)cell {
     BOOL isHiden = self.navigationController.navigationBarHidden;
     [self.navigationController setNavigationBarHidden:!isHiden animated:NO];
-    self.collectionView.backgroundColor = isHiden ? [UIColor clearColor] : [UIColor blackColor];
+    self.collectionView.backgroundColor = isHiden ? [UIColor whiteColor] : [UIColor blackColor];
+    self.screenshotImageView.backgroundColor = self.collectionView.backgroundColor;
     [self setNeedsStatusBarAppearanceUpdate];
 }
 
@@ -453,13 +473,19 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
 #pragma mark -
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    
     NSInteger page = self.collectionView.contentOffset.x / CGRectGetWidth(self.collectionView.bounds);
- 
-//    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    self.screenshotImageView.hidden = NO;
+    if(size.width > size.height) {
+        self.screenshotImageView.image = [self imageWithCellIndex:page];
+    }
     
     [self.collectionView reloadData];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(coordinator.transitionDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:page inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+        
+        self.screenshotImageView.hidden = YES;
     });
 }
 
@@ -471,6 +497,5 @@ NSString *const WUPhotoAlbumPreviewViewCellIdentifier = @"WUPhotoAlbumPreviewVie
 -(UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
 }
-
 
 @end

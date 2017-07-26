@@ -68,7 +68,7 @@
     
     self.selectedFlagView = [[UIImageView alloc] init];
     self.selectedFlagView.contentMode = UIViewContentModeCenter;
-    self.selectedFlagView.image = [WUPhotoAlbumConfiguration imageWithKey:@"WUPhotoAlbumChecked"];
+    self.selectedFlagView.image = [WUPhotoAlbumConfiguration shareConfiguration].deSelectImage;
     self.selectedFlagView.userInteractionEnabled = YES;
     [self.contentView addSubview:self.selectedFlagView];
     
@@ -97,8 +97,8 @@
     self.selectedFlagView.translatesAutoresizingMaskIntoConstraints = NO;
     [NSLayoutConstraint constraintWithItem:self.selectedFlagView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeBottom multiplier:1 constant:0].active = YES;
     [NSLayoutConstraint constraintWithItem:self.selectedFlagView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeRight multiplier:1 constant:0].active = YES;
-    [NSLayoutConstraint constraintWithItem:self.selectedFlagView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeWidth multiplier:1 constant:40].active = YES;
-    [NSLayoutConstraint constraintWithItem:self.selectedFlagView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:1 constant:40].active = YES;
+    [NSLayoutConstraint constraintWithItem:self.selectedFlagView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeWidth multiplier:1 constant:30].active = YES;
+    [NSLayoutConstraint constraintWithItem:self.selectedFlagView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:1 constant:30].active = YES;
 }
 
 -(void)selectFlagViewTap:(UIGestureRecognizer*)recognizer {

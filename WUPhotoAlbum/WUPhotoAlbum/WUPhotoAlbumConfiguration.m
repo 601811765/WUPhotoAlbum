@@ -30,8 +30,8 @@
     if(self) {
         self.maxSelecteCount = 9;
         self.backgroundColor = [UIColor whiteColor];
-        self.selectImage = [[WUPhotoAlbumConfiguration imageWithKey:@"WUPhotoAlbumChecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.deSelectImage = [[WUPhotoAlbumConfiguration imageWithKey:@"WUPhotoAlbumChecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        self.selectImage = [[WUPhotoAlbumConfiguration imageWithKey:@"WUPhotoAlbumChecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        self.deSelectImage = [[WUPhotoAlbumConfiguration imageWithKey:@"WUPhotoAlbumUnChecked"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     }
     return self;
 }
