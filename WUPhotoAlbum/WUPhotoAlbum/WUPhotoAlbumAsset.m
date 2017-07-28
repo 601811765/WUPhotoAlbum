@@ -53,7 +53,7 @@
 }
 
 -(id)copyWithZone:(NSZone *)zone {
-    WUPhotoAlbumAsset *asset = [WUPhotoAlbumAsset allocWithZone:zone];
+    WUPhotoAlbumAsset *asset = [[WUPhotoAlbumAsset allocWithZone:zone] init];
     [asset setAssetPrivate:self.asset];
     asset.tag = self.tag;
     return asset;

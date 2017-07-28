@@ -414,11 +414,9 @@ NSString *const WUPhtotAlbumCellIdentifier = @"WUPhtotAlbumCellIdentifier";
     if(!indexPath) {
         previewController.assets = self.selectedItems;
         previewController.startIndex = 0;
-        previewController.appearAnimation = NO;
     } else {
         previewController.assets = self.dataArray;
         previewController.startIndex = indexPath.row;
-        previewController.appearAnimation = YES;
     }
     previewController.startAnimationScreenRect = [self screenRectWithIndexPath:[NSIndexPath indexPathForRow:asset.tag inSection:0]];
     previewController.foregroundImage = [asset imageSynchronousWithSize:screenBounds.size];

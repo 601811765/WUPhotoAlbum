@@ -20,11 +20,18 @@ typedef void(^WUPhotoAlbumPreviewSelectItemHandler)(NSInteger imageIndex);
 
 @property(nonatomic, strong) NSArray<WUPhotoAlbumAsset*> *assets;
 
+/**
+ push动画所需前景图片
+ */
 @property(nonatomic, strong) UIImage *foregroundImage;
+/**
+ push动画起始Rect
+ */
 @property(nonatomic, assign) CGRect startAnimationScreenRect;
+/**
+ 初始显示的图片索引
+ */
 @property(nonatomic, assign) NSInteger startIndex;
-
-@property(nonatomic, assign) BOOL appearAnimation;
 
 @property(nonatomic, copy) WUPhotoAlbumPreviewWillDismiss willDismissBlock;
 @property(nonatomic, copy) WUPhotoAlbumPreviewSelectState selectState;
